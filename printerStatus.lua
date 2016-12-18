@@ -3,7 +3,11 @@
 requestRunning=false
 srvrconn=nil
 function get3DprinterStatus()
-    srvrconn=net.createConnection(net.TCP, 0) 
+    srvrconn=net.createConnection(net.TCP, 0)
+    srvrconn:on("disconnection", function(con)
+        print("Connection closed")
+        requestRunning=false
+    end)
     srvrconn:on("receive", function(con, pl) 
         --print(pl)
         local found=string.match(pl, "completion\": %d+")
@@ -15,7 +19,6 @@ function get3DprinterStatus()
         else
             print("No valid answer")
         end
-        requestRunning=false
         pl=nil
         srvrconn:close()
         collectgarbage()
@@ -28,7 +31,7 @@ function get3DprinterStatus()
 print("Asking the printer") 
 get3DprinterStatus()
 
-tmr.alarm(1, 5000, 1, function() 
+tmr.alarm(1, 30000, 1, function() 
     if (not requestRunning) then
         get3DprinterStatus()
     end
