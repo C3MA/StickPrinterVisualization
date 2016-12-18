@@ -1,0 +1,4 @@
+-- Wificonfiguration and more
+wifi.sta.config("SSID","password")
+printer3D="ip.of.3d.printer"
+apikey="The Api Key of octoprint"
