@@ -14,8 +14,13 @@ function get3DprinterStatus()
         if (found ~= nil) then
             local percent=string.match(found, "%d+")
             print(percent .. "% " .. node.heap().. " bytes free")
-            local numLeds=percent*60/100
-            ws2812.writergb(4, string.char(0,0,30):rep(numLeds) .. string.char(0,0,0):rep(60) )
+            local percent10er=math.floor(percent/10)
+            local percent1er=(percent%10)
+            local percent1leds=percent1er*60/100
+            local buf=""
+            -- complete 10% are displayed by 5 blues and one red dot
+            for i=1,percent10er do buf=buf .. string.char(0,0,30):rep(5) .. string.char(30,0,0) end
+            ws2812.writergb(4, buf .. string.char(0,0,30):rep(percent1leds) .. string.char(0,0,0):rep(60) )
         else
             print("No valid answer")
         end
